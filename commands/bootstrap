@@ -95,24 +95,32 @@ switch($argv[1]){
 		exit;
 		break;
 	case 'getToken':
-		$oApp->aInput =  array('requestType'=>'generateToken','secretPhrase'=>$oApp->getSecret(),'website'=>$argv[2]);
+		$oApp->aInput =  array(	'requestType'=>'generateToken',
+								'secretPhrase'=>$oApp->getSecret(),
+								'website'=>$argv[2]);
 		break;
 	case 'decodeToken':
-		$oApp->aInput =  array('requestType'=>'decodeToken','website'=>$argv[2],'token'=>$argv[3]);
+		$oApp->aInput =  array(	'requestType'=>'decodeToken',
+								'website'=>$argv[2],
+								'token'=>$argv[3]);
 		break;
 	case 'decodeHallmark':
-		$oApp->aInput =  array('requestType'=>'decodeHallmark','hallmark'=>$argv[2]);
+		$oApp->aInput =  array(	'requestType'=>'decodeHallmark',
+								'hallmark'=>$argv[2]);
 		break;
 	case 'getBalance':
 	    $oApp->timeout = false;
-		$oApp->aInput =  array('requestType'=>'getBalance','account'=>$argv[2]);
+		$oApp->aInput =  array(	'requestType'=>'getBalance',
+								'account'=>$argv[2]);
 		break;
 	case 'getPublicKey':
 	case 'getAccountPublicKey':
-		$oApp->aInput =  array('requestType'=>'getAccountPublicKey','account'=>$argv[2]);
+		$oApp->aInput =  array(	'requestType'=>'getAccountPublicKey',
+								'account'=>$argv[2]);
 		break;
 	case 'getTransaction':
-		$oApp->aInput =  array('requestType'=>'getTransaction','transaction'=>$argv[2]);
+		$oApp->aInput =  array(	'requestType'=>'getTransaction',
+								'transaction'=>$argv[2]);
 		break;
 	case 'getAccountId':
 		if(!empty($argv[2]))
@@ -129,15 +137,15 @@ switch($argv[1]){
 		break;
 	case 'getAlias':
 		if(is_numeric($argv[2]))
-			$aFilter = array('alias'=>$argv[2]);
+			$aFilter = array(	'alias'=>$argv[2]);
 		else
-			$aFilter = array('aliasName'=>$argv[2]);
-		$oApp->aInput =  array('requestType'=>'getAlias') + $aFilter;
+			$aFilter = array(	'aliasName'=>$argv[2]);
+		$oApp->aInput =  array(	'requestType'=>'getAlias') + $aFilter;
 		break;
 	case 'getState':
 		if(!empty($argv[2]))
 			$oApp->NODE = $argv[2];
-		$oApp->aInput =  array('requestType'=>'getState'); 
+		$oApp->aInput =  array(	'requestType'=>'getState'); 
 		break;
 	case 'getConfig':
 		echo 'NODE : '.NODE."\n";
@@ -185,10 +193,11 @@ switch($argv[1]){
 					break;
 			}
 		}
-		$oApp->aInput =  array('requestType'=>'getPeers') + $aFilter;
+		$oApp->aInput =  array(	'requestType'=>'getPeers') + $aFilter;
 		break;
 	case 'getPeer':
-		$oApp->aInput =  array('requestType'=>'getPeer','peer'=>$argv[2]); 
+		$oApp->aInput =  array(	'requestType'=>'getPeer',
+								'peer'=>$argv[2]); 
 		break;
 	case 'mine':
 		$oApp->setSecret($argv[2]);
