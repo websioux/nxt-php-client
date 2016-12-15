@@ -19,7 +19,7 @@ OPTIONAL parameters
  (default) - returns the CURL request and readable output of objects (good to be used on the command line)
  -json : only returns the json string (good to be used by programs).
  -ssh : a usefull workaround for nodes that do not have https set up, the distant node must have this library installed. 
-        Then the node is queried via ssh and then makes it's final request to next server with with http://localhost:7876
+        Then the node is queried via ssh and then makes it's final request to the NXT server with with http://localhost:7876
 
 **************************************************
 	COMMAND LINE SHORTCUTS
