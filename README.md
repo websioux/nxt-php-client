@@ -40,8 +40,10 @@ and edit private-config.php with your server address.
 ```echo "alias nxt='/PATH_TO/nxt-php-client/commands/bootstrap'" >>  ~/bash_aliases;
 	source ./bash_aliases```
 
-Type
+Try:
+```
 nxt help 
+```
 
 FINISHED!
 
