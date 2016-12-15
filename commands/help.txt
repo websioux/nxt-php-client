@@ -1,0 +1,89 @@
+nxt {commands}
+
+**************************************************
+				GENERAL API
+**************************************************
+
+nxt API_QUERY_STRING (optional: -json, -ssh)
+
+The command line utility can be used for any NXT API command, 
+API_QUERY_STRING is the http like query string
+
+Examples :
+
+nxt requestType=getPeers -json
+nxt requestType=getPeers -ssh
+nxt requestType=getPeers -json -ssh
+
+ (default) - returns the CURL request and readable output of objects (good to be used on the command line)
+ -json : only returns the json string (good to be used by programs).
+ -ssh : a usefull workaround for nodes that do not have https set up, the distant node must have this library installed. 
+        Then the node is queried via ssh and then makes it's final request to next server with with http://localhost:7876
+
+**************************************************
+			COMMAND LINE SHORT CUTS
+**************************************************
+
+Below are custom commands that are defined in boostrap.php
+The options -json and -ssh are also available
+
+example
+
+nxt getBalance NXT-39LJ-V67N-TJB9-EHUKA -json
+ 
+== NODE OPERATION ==
+
+nxt start 					: Starts the local NXT server
+nxt stop 					: Kill NXT server process
+nxt restart					: Stop then Start
+nxt unlock 					: Start forging interactive screen asks for passphrase
+nxt lock 					: Stop forging, interactive screen asks for passphrase
+nxt getState				: Get server blockchain state
+nxt getconfig				: Get config paramêters
+nxt stay_alive				: Restart server if it is not runing
+nxt stay_alive forge		: Restart server if it is not runing + alert admin that forging has stopped (if it did..)
+nxt backup					: Creates a backup of H2 database (blockchain) with minimum downtime (speed up recovery if DB files get corrupted.. which still happens sometimes)
+nxt network					: Gives data about nodes that you survey - defines the nodes in config.php as an array: $aWhiteListeNodes['nxt'] = array('http://127.0.0.1:7876','http://nxt.scriba.io:7876')
+
+== ENCODING DECODING ==
+
+nxt getToken www.notbot.me			: create token, interactive screen asks for passphrase
+nxt decodeToken www.notbot.me sbfmg12288jh	: decode token sbfmg12288jh
+nxt decodeHallmark shall65s4fps			: decode hallmark shall65s4fps
+
+== ACCOUNTS ==
+
+nxt getBalance NXT-39LJ-V67N-TJB9-EHUKA 	: get balance of NXT-39LJ-V67N-TJB9-EHUKA (accept also the numerical account format)
+nxt getAccountId 				: return accountId, interactive screen asks for passphrase
+nxt getAccountId 9fdg87hf9d8g7h9d8f7gh9		: return accountId for passphase 9fdg87hf9d8g7h9d8f7gh9
+nxt getAccount NXT-39LJ-V67N-TJB9-EHUKA 	: get a bunch of informations about account (accept also the numerical account format)
+nxt getAliases  NXT-39LJ-V67N-TJB9-EHUKA 	: get all the aliases owned by an account (accept also the numerical account format)
+nxt getAlias scriba 				: get the informations about the alias "scriba"
+
+== BLOCK ==
+
+nxt getBlock 17643352830869739755 		: return block data
+
+== NETWORK ==
+
+nxt getPeers 					: return peers of the node
+
+- Options
+nxt getPeers active
+nxt getPeers connected
+nxt getPeers disconnected
+nxt getPeers non_connected
+nxt getPeers API
+nxt getPeers API_SSL
+nxt getPeers hallmark
+nxt getPeers prunable
+
+== fun ==
+
+nxt mine whateverpassphrase 			: return accountId and Balance if you are luck enouh !
+
+== help ==
+
+nxt help 					: return this help
+
+

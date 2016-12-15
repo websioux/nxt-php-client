@@ -1,0 +1,286 @@
+#!/usr/bin/php
+<?php
+error_reporting(E_ALL ^ E_NOTICE);
+require(dirname(__FILE__).'/../params.php');
+function makeInput($argv){
+	global $oApp, $argv;
+	foreach($argv as $sKV){
+		if(strpos($sKV,'=')) {
+			$aExp = explode('&',$sKV);
+			foreach($aExp as $sArg) {
+				list($sK,$sV)=explode('=',$sArg);
+				$oApp->aInput[$sK]=$sV;
+			}
+		}
+	}
+}
+function display() {
+	global $oApp, $argv;
+	$oApp->bOutputRequest = true;
+	foreach($argv as $sArg) {
+		if($sArg == '-ssh') // force endpoint node connection with http or https
+			$oApp->api_mode='ssh';
+		if($sArg == '-json') {
+			$oApp->sOutputMode='json';
+			$oApp->bOutputRequest = false;
+		}
+	}
+	if($oApp->sOutputMode=='json')
+		die(json_encode($oApp->getResponse()));
+	print_r($oApp->getResponse());
+	echo "\n\n".'Distributed under GPL V2 Licence.'."\n";
+
+}
+$oApp = new MyCNxt;
+switch($argv[1]){
+	default :
+		makeInput($argv);
+		break;
+	case 'start':
+		if(!defined('SERVER_PATH'))
+			die('Can not start client if SERVER_PATH is not defined');
+		chdir(SERVER_PATH);
+		$cmd = './run.sh';
+		echo $cmd;
+		exec($cmd);
+		exit;
+		break;
+	case 'stop':
+		if(!defined('SERVER_PATH'))
+			die('Can not stop client if SERVER_PATH is not defined');
+		chdir(SERVER_PATH);
+		$cmd = 'ps ax | grep nxt.Nxt | grep -v grep';
+		exec($cmd,$aOut);
+		$sPids='';
+		if(!empty($aOut))
+			foreach($aOut as $sOut) {
+				$n = strpos($sOut,' ');
+				if(!empty($n)) {	
+					$sPids .= ' '.substr($sOut,0,$n);
+				}
+			}
+			exect('kill'.$sPids);
+		exit;
+		break;
+	case 'restart':
+		exec(PHP_LIB.'commands/bootstrap stop');
+		exec(PHP_LIB.'commands/bootstrap start');
+		exit;
+		break;
+	case 'unlock':
+		$accountId=$oApp->getAccountId();
+		print_r($oApp);
+		echo 'START FORGING acccount: '.$accountId."\n";
+		$o = $oApp->unlock();
+		echo "\n".'Should forge next block in '.$o->deadline." s \n";
+		exit;
+		break;
+	case 'lock':
+		$accountId=$oApp->getAccountId();
+		$o = $oApp->lock();
+		if($o->foundAndStopped)
+			echo 'STOP FORGING acccount: '.$accountId."\n";
+		else
+			echo "Not found \n";
+		exit;
+		break;
+	case 'islocked':
+		$accountId=$oApp->getAccountId();
+		echo 'acccount: '.$accountId."\n";
+		$o = $oApp->islocked();
+		if(!empty($o->errorCode) && $o->errorCode == 5)
+				echo "\n".'Account is NOT forging'."\n";
+		else if(empty($o->errorCode))
+				echo "\n".'Account forging : Should forge next block in '.$o->deadline." s \n";
+		exit;
+		break;
+	case 'getToken':
+		$oApp->aInput =  array('requestType'=>'generateToken','secretPhrase'=>$oApp->getSecret(),'website'=>$argv[2]);
+		break;
+	case 'decodeToken':
+		$oApp->aInput =  array('requestType'=>'decodeToken','website'=>$argv[2],'token'=>$argv[3]);
+		break;
+	case 'decodeHallmark':
+		$oApp->aInput =  array('requestType'=>'decodeHallmark','hallmark'=>$argv[2]);
+		break;
+	case 'getBalance':
+	    $oApp->timeout = false;
+		$oApp->aInput =  array('requestType'=>'getBalance','account'=>$argv[2]);
+		break;
+	case 'getPublicKey':
+	case 'getAccountPublicKey':
+		$oApp->aInput =  array('requestType'=>'getAccountPublicKey','account'=>$argv[2]);
+		break;
+	case 'getTransaction':
+		$oApp->aInput =  array('requestType'=>'getTransaction','transaction'=>$argv[2]);
+		break;
+	case 'getAccountId':
+		if(!empty($argv[2]))
+			$oApp->_secret = $argv[2];
+		$oApp->getAccountId();
+		break;
+	case 'getAccount':
+		print_r($oApp->getAccount($argv[2]));
+		exit;
+		break;
+	case 'getAliases':
+		print_r($oApp->getAliasList($argv[2]));
+		exit;
+		break;
+	case 'getAlias':
+		if(is_numeric($argv[2]))
+			$aFilter = array('alias'=>$argv[2]);
+		else
+			$aFilter = array('aliasName'=>$argv[2]);
+		$oApp->aInput =  array('requestType'=>'getAlias') + $aFilter;
+		break;
+	case 'getState':
+		if(!empty($argv[2]))
+			$oApp->NODE = $argv[2];
+		$oApp->aInput =  array('requestType'=>'getState'); 
+		break;
+	case 'getConfig':
+		echo 'NODE : '.NODE."\n";
+		echo 'SERVER_PATH : '.SERVER_PATH."\n";
+		print_r($oApp);
+		break;
+	case 'getBlock':
+		print_r($oApp->getBlock($argv[2]));
+		exit;
+		break;
+	case 'getPeers':
+		$aFilter = array();
+		$sServiceKey = 'service';
+		for($i=2;$i<count($argv);$i++) {
+			switch($argv[$i]) {
+				case 'active' :
+					$aFilter += array('active'=>'true');
+					break;
+				case 'connected' :
+					$aFilter += array('state'=>'CONNECTED');
+					break;
+				case 'disconnected' :
+					$aFilter += array('state'=>'DISCONNECTED');
+					break;
+				case 'non_connected' :
+					$aFilter += array('state'=>'NON_CONNECTED');
+					break;
+				case 'API' :
+					$aFilter += array($sServiceKey=>'API');
+					$sServiceKey .= '*';
+					break;
+				case 'API_SSL' :
+					$aFilter += array($sServiceKey=>'API_SSL');
+					$sServiceKey .= '*';
+					break;
+				case 'hallmark' :
+					$aFilter += array($sServiceKey=>'HALLMARK');
+					$sServiceKey .= '*';
+					break;
+				case 'prunable' :
+					$aFilter += array($sServiceKey=>'PRUNABLE');
+					$sServiceKey .= '*';
+					break;
+				default :
+					break;
+			}
+		}
+		$oApp->aInput =  array('requestType'=>'getPeers') + $aFilter;
+		break;
+	case 'getPeer':
+		$oApp->aInput =  array('requestType'=>'getPeer','peer'=>$argv[2]); 
+		break;
+	case 'mine':
+		$oApp->setSecret($argv[2]);
+		$accountId = $oApp->getAccountId();
+		$oApp->getAccount($accountId);
+		break;
+	case 'help' :
+		echo file_get_contents(__DIR__.'/help.txt');
+		die;
+		break;
+	case 'update' :
+		if(empty($argv[2])) {
+			echo("\nEnter Version : ");
+			$sVersion = trim(fgets(STDIN));
+		} else
+			$sVersion = $argv[2];
+		chdir('~');
+		$s = 'wget https://bitbucket.org/JeanLucPicard/nxt/downloads/nxt-client-'.$sVersion.'.zip';
+		echo "$s\n";
+		exec($s);
+		$s = 'wget https://bitbucket.org/JeanLucPicard/nxt/downloads/nxt-client-'.$sVersion.'.zip.asc';
+		echo "$s\n";
+		exec($s);
+		$s = 'gpg --verify nxt-client-'.$sVersion.'.zip.asc';
+		echo "$s\n";
+		exec($s);
+		$s = 'sha256sum nxt-client-'.$sVersion.'.zip';
+		echo "$s\n";
+		echo exec($s);
+		echo "\nCONTINUE (y or n)?  :";
+		$continue = trim(fgets(STDIN));
+		if($continue=='y') {
+			$s = 'rm -fr nxt/lib';
+			echo "$s\n";
+			exec($s);
+			$s = 'unzip nxt-client-'.$sVersion.'.zip';
+			echo "$s\n";
+			echo exec($s);
+		} else
+			echo "Quit\n";
+		die;
+		break;
+	case 'backup' :
+		exec('mkdir '.SERVER_PATH .'nxt_db_bak');
+		exec('rsync -Harov --stats --delete --numeric-ids '.SERVER_PATH .'nxt_db/ '.SERVER_PATH .'nxt_db_bak');
+		exec(PHP_LIB.'commands/bootstrap stop');
+		exec('rsync -Harov --stats --delete --numeric-ids '.SERVER_PATH .'nxt_db/ '.SERVER_PATH .'nxt_db_bak');
+		exec(PHP_LIB.'commands/bootstrap start');
+		die;
+		break;
+	case 'stay_alive' :
+		$sCmd = 'ps ax | grep "nxt.Nxt"';
+		exec($sCmd,$aOut);
+		//print_r($aOut); die;
+		if(count($aOut)<3) {
+			chdir(SERVER_PATH);
+			$sCmd = './run.sh';
+			exec($sCmd);
+			echo("\n".implode("\n",$aOut));
+			echo date('Ymd h:i:s').' NXT has stopped ! Restart..'."\n";
+		}
+		if(isset($argv[2]) && $argv[2]=='forging') {
+			$sJson = exec(PHP_LIB.'commands/bootstrap getState json');
+			$oR = json_decode($sJson);
+			if(!$oR->numberOfUnlockedAccounts)
+				exec('echo "nxt.cybermailing is not forging.." | mail -s "'.exec('hostname').' has stopped forging" '.ADMIN_EMAIL);
+		}
+		die;
+		break;
+	case 'network' :
+		$oRes = array();
+		foreach($aWhiteListNodes as $sNode) {
+			$sRes = exec('timeout 17 curl -sk --data "requestType=getState" '.$sNode.'/nxt json');
+			$aRes[$sNode] = json_decode($sRes);
+			
+		}
+		echo "\nNETWORK ANALYSIS" ;
+		echo "\n				BlockHeight	FreeMem %	ActivePeers	LastBlock\n" ;
+		$sStat = '';
+		foreach($aWhiteListNodes as $sNode) {
+			if(!empty($aRes[$sNode])) {
+				$oRes = $aRes[$sNode];
+				$nTab=strlen($sNode)<22?"\t\t":"\t";
+				echo $sNode.':'.$nTab.$oRes->numberOfBlocks.'		'.round(100*$oRes->freeMemory/$oRes->totalMemory,0).'%		'.$oRes->numberOfActivePeers.'		'.$oRes->lastBlock.'		'.$oRes->version."\n";
+				$sStat .= $oRes->numberOfBlocks .',';
+			} else {
+				echo $sNode.':'."\n";
+				$sStat .= '\"\",';
+			}
+		}
+		exec('echo "\"'.date('Y-m-d H:i:s').'\",'.trim($sStat,',').'">> ~/raspberrypi2_delay.csv');
+		die;
+		break;
+}
+display();
