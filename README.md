@@ -1,3 +1,8 @@
+#nxt-php-client
+
+PHP client library to query NXT servers in your PHP projexts 
+&& a command line utility to help with node management and blockchain queries.
+
 Requirements: PHP5+ for the php library alone
 Linux for the command line utiliy
 
