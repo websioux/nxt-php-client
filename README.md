@@ -32,15 +32,20 @@ Add `require('/PATH_TO/nxt-php-client/params.php')` to the top of your PHP proje
 
 * Create custom config
 
-```cp nxt-php-client/dummy-config.php nxt-php-client/private-config.php```
+```
+cp nxt-php-client/dummy-config.php nxt-php-client/private-config.php
+```
 and edit private-config.php with your server address.
 
 * Add *nxt* as an alias of /PATH_TO/nxt-php-client/commands/bootstrap
 
-```echo "alias nxt='/PATH_TO/nxt-php-client/commands/bootstrap'" >>  ~/bash_aliases;
-	source ./bash_aliases```
+```
+echo "alias nxt='/PATH_TO/nxt-php-client/commands/bootstrap'" >>  ~/bash_aliases;
+source ./bash_aliases
+```
 
 Try:
+
 ```
 nxt help 
 ```
