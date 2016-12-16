@@ -49,6 +49,24 @@ Try:
 ```
 nxt help 
 ```
+It gives
 
-FINISHED!
+![cli help](img/help.png)
+![cli help 1](img/help1.png)
+
+Here are some command examples :
+```
+nxt getState
+```
+![cli getState](img/cli-getState.png)
+
+```
+nxt getTransaction 10294474557684324455
+```
+![cli getTransaction](img/cli-getTransaction.png)
+
+```
+nxt getAliase apple
+```
+![cli getAlias](img/cli-getAlias.png)
 

@@ -6,13 +6,12 @@ USE: nxt {commands} (optional: -json, -ssh)
 **************************************************
 
 The command line utility can be used for any NXT API Request, 
-the {command} like query string
+{command} is equivalent to the http query string of the API but
+value pair are separted by *space* instead of *&* 
 
 Examples :
 
-nxt requestType=getPeers -json
-nxt requestType=getPeers -ssh
-nxt requestType=getPeers -json -ssh
+nxt requestType=getBlockchainTransactions account=NXT-THLJ-CYAL-JQST-6FNS5
 
 OPTIONAL parameters
 
