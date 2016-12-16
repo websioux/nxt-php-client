@@ -10,10 +10,9 @@ Linux for the command line utiliy
 If you have git installed:
 
 ```	
-mkdir nxt-php-client; 
-cd nxt-php-client; 
 git clone https://github.com/websioux/nxt-php-client.git
 ```
+(il will create the folder nxt-php-client)
 
 else
 
