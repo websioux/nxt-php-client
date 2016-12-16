@@ -70,7 +70,7 @@ and edit private-config.php with the server address of your choice
 * Add *nxt* as a bash alias of /PATH_TO/nxt-php-client/commands/bootstrap
 
 ```
-nxt-php-client/commands/add_alias
+nxt-php-client/commands/add_alias; source ~/.bash_aliases;
 ```
 
 To know all the commands
