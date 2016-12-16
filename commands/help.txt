@@ -30,18 +30,24 @@ The options -json and -ssh described above are also available
 Example:
 nxt getBalance NXT-39LJ-V67N-TJB9-EHUKA -json
  
--- NODE OPERATION --------------------------------
+-- NODE OPERATION on LOCAL MACINE --------------------------------
 
+nxt version					: Retuns version of the server
+nxt update 1.10.3				: Update to the version given - Manual confirmation required after download completed and sha256sum of the zip is outputed.
 nxt start 					: Starts the local NXT server
 nxt stop 					: Kill NXT server process
 nxt restart					: Stop then Start
 nxt unlock 					: Start forging interactive screen asks for passphrase
 nxt lock 					: Stop forging, interactive screen asks for passphrase
-nxt getState					: Get server blockchain state
-nxt getconfig					: Get config paramêters
 nxt stay_alive					: Restart server if it is not runing
 nxt stay_alive forge				: Restart server if it is not runing + alert admin that forging has stopped (if it did..)
 nxt backup					: Creates a backup of H2 database (blockchain) with minimum downtime (speed up recovery if DB files get corrupted.. which still happens sometimes)
+
+
+-- NETWORK INFORMATIONS -----------------------------------------
+
+nxt getconfig					: Get the config parameters
+nxt getState					: Get blockchain state of the NODE in config
 nxt network					: Gives data about nodes that you survey 
 						- defines the nodes in private-config.php with php array, example: 
 							$aWhiteListeNodes['nxt'] = array('http://127.0.0.1:7876','http://nxt.scriba.io:7876')

@@ -28,7 +28,7 @@ function display() {
 	if($oApp->sOutputMode=='json')
 		die(json_encode($oApp->getResponse()));
 	print_r($oApp->getResponse());
-	echo "\n\n".'Distributed under GPL V2 Licence.'."\n";
+	echo "\n\n".'Distributed under GPLv2, with ABSOLUTELY NO WARRANTY.'."\n";
 
 }
 $oApp = new MyCNxt;
@@ -59,7 +59,7 @@ switch($argv[1]){
 					$sPids .= ' '.substr($sOut,0,$n);
 				}
 			}
-			exect('kill'.$sPids);
+			exec('kill'.$sPids);
 		exit;
 		break;
 	case 'restart':
@@ -150,6 +150,8 @@ switch($argv[1]){
 	case 'getConfig':
 		echo 'NODE : '.NODE."\n";
 		echo 'SERVER_PATH : '.SERVER_PATH."\n";
+		echo 'EXTERNAL_NXT_PHP_LIB : '.EXTERNAL_NXT_PHP_LIB."\n";
+		echo 'ADMIN_EMAIL : '.ADMIN_EMAIL."\n";
 		print_r($oApp);
 		break;
 	case 'getBlock':
@@ -214,7 +216,7 @@ switch($argv[1]){
 			$sVersion = trim(fgets(STDIN));
 		} else
 			$sVersion = $argv[2];
-		chdir('~');
+		chdir(SERVER_PATH.'../');
 		$s = 'wget https://bitbucket.org/JeanLucPicard/nxt/downloads/nxt-client-'.$sVersion.'.zip';
 		echo "$s\n";
 		exec($s);
@@ -229,15 +231,17 @@ switch($argv[1]){
 		echo exec($s);
 		echo "\nCONTINUE (y or n)?  :";
 		$continue = trim(fgets(STDIN));
-		if($continue=='y') {
+		if(strtolower($continue)=='y') {
+			exec(PHP_LIB.'commands/bootstrap stop');
 			$s = 'rm -fr nxt/lib';
 			echo "$s\n";
 			exec($s);
 			$s = 'unzip nxt-client-'.$sVersion.'.zip';
 			echo "$s\n";
 			echo exec($s);
+			echo "\n".'UPDATE ENDED - NOW RESTART YOUR NODE'."\n";
 		} else
-			echo "Quit\n";
+			echo "Aborted\n";
 		die;
 		break;
 	case 'backup' :
@@ -291,5 +295,9 @@ switch($argv[1]){
 		exec('echo "\"'.date('Y-m-d H:i:s').'\",'.trim($sStat,',').'">> ~/raspberrypi2_delay.csv');
 		die;
 		break;
+	case 'version' :
+		$sCmd = 'grep nxt.version '.SERVER_PATH.'conf/nxt-default.properties';
+		echo str_replace('nxt.version=','',exec($sCmd))."\n";
+		die; 
 }
 display();

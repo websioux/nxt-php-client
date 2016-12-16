@@ -28,7 +28,7 @@ class CNxtApi {
 	 */ 
 	protected function _request(){
 		if(empty($this->aInput))
-			die('error: you must specify input to request API');
+			die('Error: empty or unknown input'."\n");
 		if(!empty($this->timeout))
 			$sTimeOut = 'timeout '.$this->timeout;
 		else

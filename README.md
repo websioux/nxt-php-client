@@ -75,17 +75,24 @@ echo "alias nxt='/PATH_TO/nxt-php-client/commands/bootstrap'" >>  ~/bash_aliases
 source ./bash_aliases
 ```
 
-Try:
+To know all the commands
 
 ```
 nxt help 
 ```
-It gives
 
-![cli help](img/help.png)
-![cli help 1](img/help1.png)
+Here are some usefull command examples :
 
-Here are some command examples :
+```
+nxt update 1.10.3
+```
+![cli update](img/cli-update.png)
+
+```
+nxt network
+```
+![cli network](img/cli-network.png)
+
 ```
 nxt getState
 ```
