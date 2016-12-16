@@ -71,8 +71,8 @@ and edit private-config.php with the server address of your choice
 (replace /PATH_TO with the absolute location on your machine
 
 ```
-echo "alias nxt='/PATH_TO/nxt-php-client/commands/bootstrap'" >>  ~/bash_aliases;
-source ./bash_aliases
+echo "alias nxt='/PATH_TO/nxt-php-client/commands/bootstrap'" >>  ~/.bash_aliases;
+source ~/.bash_aliases
 ```
 
 To know all the commands
