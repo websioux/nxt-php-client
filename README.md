@@ -1,7 +1,6 @@
 # NXT PHP Client
 
-PHP library to easily call NXT API in your PHP projects 
-+ a command line tool to facilitate node management and some blockchain queries.
+A PHP library to easily call NXT API in your PHP projects AND a command line tool to facilitate node management and some blockchain queries.
 
 Requirements: PHP5+ for the php library alone
 Linux for the command line utiliy
@@ -28,9 +27,9 @@ mv nxt-php-client-master nxt-php-client
 
 Add `require('/PATH_TO/nxt-php-client/params.php')` and  `class CNxt extends CNxtApi {}` to the top of your PHP project
 
-With having your own class you devellopp your own functions and do risk to loose them with an update.
+Having your own class to devellop your own functions remove the risk to loose them during an update.
 
-Then to make a request use for instance:
+Here is an example of a sendMoney request :
 
 ```
 $oApp = new CNxt;
@@ -47,7 +46,7 @@ $oApp->aInput = array(
 $oResp = $oApp->getResponse();
 ```
 
-If you need to make the same query on another node :
+If you need to make the same query to an another node :
 
 ```
 $oApp->protocol='https';
@@ -56,8 +55,9 @@ $oApp->protocol='443';
 
 $oResp = $oApp->getResponse();
 ```
-The class MyCNxt (in classes/mycnxt.php) is an example of a class extension which is used by 
-the command line utility but that you do not really need in your projects.
+
+The class *MyCNxt* (in classes/mycnxt.php) is an example of a class extension which is used by 
+the command line tool you do not really need in your projects.
 
 ## Set Up Command Line Utility:
 
@@ -66,9 +66,10 @@ the command line utility but that you do not really need in your projects.
 ```
 cp nxt-php-client/dummy-config.php nxt-php-client/private-config.php
 ```
-and edit private-config.php with your server address.
+and edit private-config.php with the server address of your choice
 
 * Add *nxt* as a bash alias of /PATH_TO/nxt-php-client/commands/bootstrap
+(replace /PATH_TO with the absolute location on your machine
 
 ```
 echo "alias nxt='/PATH_TO/nxt-php-client/commands/bootstrap'" >>  ~/bash_aliases;
