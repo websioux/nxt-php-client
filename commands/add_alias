@@ -1,0 +1,3 @@
+#!/usr/bin/php
+<?php
+exec("echo \"alias nxt='".__DIR__. "/bootstrap'\">> ~/.bash_aliases");

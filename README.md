@@ -68,11 +68,9 @@ cp nxt-php-client/dummy-config.php nxt-php-client/private-config.php
 and edit private-config.php with the server address of your choice
 
 * Add *nxt* as a bash alias of /PATH_TO/nxt-php-client/commands/bootstrap
-(replace /PATH_TO with the absolute location on your machine
 
 ```
-echo "alias nxt='/PATH_TO/nxt-php-client/commands/bootstrap'" >>  ~/.bash_aliases;
-source ~/.bash_aliases
+nxt-php-client/commands/add_alias
 ```
 
 To know all the commands
