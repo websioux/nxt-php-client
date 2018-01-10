@@ -34,7 +34,7 @@ Having your own class to store your own functions remove the risk to loose anyth
 
 Here is an example of a sendMoney request :
 
-```
+```php
 $oApp = new CNxt;
 $oApp->aInput = array(
 				'requestType'=>'sendMoney',
@@ -51,7 +51,7 @@ $oResp = $oApp->getResponse();
 
 If you need to make the same query to an another node :
 
-```
+```php
 $oApp->protocol='https';
 $oApp->host='nxt.notbot.me';
 $oApp->protocol='443';
