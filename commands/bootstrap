@@ -31,7 +31,7 @@ function display() {
 	echo "\n\n".'Distributed under GPLv2, with ABSOLUTELY NO WARRANTY.'."\n";
 
 }
-$oApp = new MyCNxt;
+$oApp = new websioux\nxtphpclient\MyCNxt;
 switch($argv[1]){
 	default :
 		makeInput($argv);
@@ -94,6 +94,11 @@ switch($argv[1]){
 				echo "\n".'Account forging : Should forge next block in '.$o->deadline." s \n";
 		exit;
 		break;
+	case 'getAllAssets':
+		$oApp->aInput =  array(	'requestType'=>'getAllAssets',
+								'includeCounts'=>'true',
+								'firstIndex'=>empty($argv[2])?0:$argv[2]);
+		break;
 	case 'getToken':
 		$oApp->aInput =  array(	'requestType'=>'generateToken',
 								'secretPhrase'=>$oApp->getSecret(),
@@ -132,7 +137,7 @@ switch($argv[1]){
 		exit;
 		break;
 	case 'getAliases':
-		print_r($oApp->getAliasList($argv[2]));
+		print_r($oApp->getAliasList($argv[2],$argv[3]));
 		exit;
 		break;
 	case 'getAlias':
@@ -148,6 +153,9 @@ switch($argv[1]){
 		$oApp->aInput =  array(	'requestType'=>'getState'); 
 		break;
 	case 'getConfig':
+		echo 'SYSTEM CONSTANTS --------- '."\n";
+		echo 'NXT_NODE : '.file_get_contents(PHP_LIB.'current_node')."\n";
+		echo 'PHP CONSTANTS --------- '."\n";
 		echo 'NODE : '.NODE."\n";
 		echo 'SERVER_PATH : '.SERVER_PATH."\n";
 		echo 'EXTERNAL_NXT_PHP_LIB : '.EXTERNAL_NXT_PHP_LIB."\n";
@@ -217,10 +225,10 @@ switch($argv[1]){
 		} else
 			$sVersion = $argv[2];
 		chdir(SERVER_PATH.'../');
-		$s = 'wget https://bitbucket.org/JeanLucPicard/nxt/downloads/nxt-client-'.$sVersion.'.zip';
+		$s = 'wget https://bitbucket.org/Jelurida/nxt/downloads/nxt-client-'.$sVersion.'.zip';
 		echo "$s\n";
 		exec($s);
-		$s = 'wget https://bitbucket.org/JeanLucPicard/nxt/downloads/nxt-client-'.$sVersion.'.zip.asc';
+		$s = 'wget https://bitbucket.org/Jelurida/nxt/downloads/nxt-client-'.$sVersion.'.zip.asc';
 		echo "$s\n";
 		exec($s);
 		$s = 'gpg --verify nxt-client-'.$sVersion.'.zip.asc';
@@ -299,5 +307,50 @@ switch($argv[1]){
 		$sCmd = 'grep nxt.version '.SERVER_PATH.'conf/nxt-default.properties';
 		echo str_replace('nxt.version=','',exec($sCmd))."\n";
 		die; 
+	case 'setNode' :
+		$sCmd = 'echo "'.trim($argv[2]).'" > '.PHP_LIB.'current_node';
+		exec($sCmd);
+		die;
+	case 'query' :
+		if(empty(ADMIN_PWD)) {
+			if(isset($argv[3]))
+				$sPwd = $argv[3];
+			else 
+				die('defined ADMIN_PWD in config or check you request format: [nxt query "SELECT * FROM ACCOUNT" (option:adminPassword)]'."\n");
+			$sQuery = 'line='.urlencode(trim($argv[2])).'&adminPassword='.$sPwd;
+		}
+		else {
+			$sPwd = ADMIN_PWD;
+			$sQuery = 'line='.urlencode(trim($argv[2])).'&adminPassword='.$sPwd;
+		}
+		$sCmd = 'curl -sk --data "'.$sQuery.'" '.NODE.'/dbshell';	
+		$aOut=array();
+		exec($sCmd,$aOut);
+		$sSqlInput=$sOut[1];
+		$sSqlHeadResp=$aOut[2];
+		$o = new stdClass;
+		if(substr($sSqlHeadResp,0,13)=='Error: org.h2') {
+			$o->status='0';
+			$o->error=$sSqlHeadResp;
+		}
+		else {
+			
+			$aHead = explode('|',$sSqlHeadResp);
+			foreach($aHead as $n=>$sKey) {
+				$aHead[$n]=trim($sKey);
+			}
+			$aList=array();
+			for($i=3;$i<count($aOut)-1;$i++){
+				$aData = explode('|',$aOut[$i]);
+				$oRow = new stdClass;
+				foreach($aHead as $n=>$sKey) {
+					$oRow->$sKey = trim($aData[$n]);
+				}
+				$aList[]=$oRow;
+			}
+			$o = $aList;		
+		}
+		echo json_encode($o,JSON_PRETTY_PRINT);
+		die;
 }
 display();

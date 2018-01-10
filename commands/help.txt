@@ -64,8 +64,10 @@ nxt getBalance NXT-39LJ-V67N-TJB9-EHUKA 	: get balance of NXT-39LJ-V67N-TJB9-EHU
 nxt getAccountId 				: return accountId, interactive screen asks for passphrase
 nxt getAccountId 9fdg87hf9d8g7h9d8f7gh9		: return accountId for passphase 9fdg87hf9d8g7h9d8f7gh9
 nxt getAccount NXT-39LJ-V67N-TJB9-EHUKA 	: get a bunch of informations about account (accept also the numerical account format)
-nxt getAliases  NXT-39LJ-V67N-TJB9-EHUKA 	: get all the aliases owned by an account (accept also the numerical account format)
 nxt getAlias scriba 				: get the informations about the alias "scriba"
+nxt getAliases NXT-39LJ-V67N-TJB9-EHUKA 	 : get aliases 1 to 100 owned by the account (accept also the numerical account format)
+nxt getAliases NXT-39LJ-V67N-TJB9-EHUKA 123 	: get aliases 123 to 223 owned by the account (accept also the numerical account format)
+nxt getAllAssets 123 				: get 100 assets starting at index 123
 
 -- ENCODING DECODING -----------------------------
 == BLOCK ==

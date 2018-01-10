@@ -1,5 +1,5 @@
 <?php
-
+namespace websioux\nxtphpclient;
 /* Class to handle NXT API request */
 
 class CNxtApi {
@@ -7,9 +7,15 @@ class CNxtApi {
 	const GENESIS_TIME = 1385294400;
 	const GENESIS_BLOCKID = '2680262203532249785';
 
-	public function __construct(){
+	public function __construct($aInput=null){
 		$this->timeout = 7;
 		$this->bOutputRequest = false;
+		$this->initialize();
+		if(!empty($aInput))
+			$this->aInput=$aInput;
+	}
+
+	public function initialize(){ 
 		$sNode=defined('NODE')?NODE:'http://127.0.0.1:7876';
 		if(substr($sNode,0,4)=='http') {
 			list($this->protocol,$this->host,$this->nxt_port) = explode(':',$sNode); //
@@ -65,7 +71,7 @@ class CNxtApi {
 	function getResponse($attribute='') {
 		$sResp = $this->_request();
 		if(empty($sResp)) {
-			$this->oResponse = new stdClass;
+			$this->oResponse = new \stdClass;
 			$this->oResponse->errorCode=1;
 			$this->oResponse->errorDescription='NXT node Timeout';
 			return $this->oResponse;

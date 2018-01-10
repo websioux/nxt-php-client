@@ -1,6 +1,10 @@
 # NXT PHP Client
 
-A PHP library to easily call NXT API in your PHP projects AND a command line tool to facilitate node management and some blockchain queries.
+Here is a command line tool that facilitate NXT node management and to do some blockchain queries.
+It comes with a very basic PHP library to call NXT API nodesj, that you may like to use in
+you PHP projects.
+
+Since it is a command line tool, it can also be used by any language via system calls.
 
 Requirements: PHP5+ for the php library alone
 Linux for the command line utiliy
@@ -26,7 +30,7 @@ mv nxt-php-client-master nxt-php-client
 
 Add `require('/PATH_TO/nxt-php-client/params.php')` and  `class CNxt extends CNxtApi {}` to the top of your PHP project
 
-Having your own class to devellop your own functions remove the risk to loose them during an update.
+Having your own class to store your own functions remove the risk to loose anything during an update.
 
 Here is an example of a sendMoney request :
 
@@ -55,10 +59,13 @@ $oApp->protocol='443';
 $oResp = $oApp->getResponse();
 ```
 
-The class *MyCNxt* (in classes/mycnxt.php) is an example of a class extension which is used by 
-the command line tool you do not really need in your projects.
+The class *MyCNxt* (in classes/mycnxt.php) is an extension of the main class *CNxtApi* which was 
+developped for the command line tool. You may not need it for your projects but you can use it 
+as a starting example.
 
-## Set Up Command Line Utility:
+The command line tool consist of executing the script commands/bootstrap with a system alias.
+
+## Set Up Command Line Tool:
 
 * Create custom config
 

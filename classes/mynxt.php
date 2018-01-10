@@ -1,8 +1,26 @@
 <?php
-
+namespace websioux\nxtphpclient;
 /* Class that customize NXT API request */
 
 class MyCNxt extends CNxtApi {
+
+	public function initialize(){ 
+		$sNode=defined('NODE')?NODE:'http://127.0.0.1:7876';
+		if(!empty($sNode)) {
+			if(substr($sNode,0,4)=='http') {
+				list($this->protocol,$this->host,$this->nxt_port) = explode(':',$sNode); //
+				$this->host = str_replace('//','',$this->host);
+				return;
+			}
+			else {
+				list($this->protocol,$this->host) = explode(':',$sNode); //
+				if(strpos($this->host,'@')>0)
+					list($this->user,$this->host) = explode('@',$this->host); //
+				return;
+			}
+		} 
+		parent::initialize();
+	}
 
 	function getSecret(){
 		if(empty($this->_secret)) {
@@ -30,8 +48,9 @@ class MyCNxt extends CNxtApi {
 			return $this->getResponse();
 		}
 
-	function getAliasList($accountId) {
+	function getAliasList($accountId,$index=0) {
 			$this->aInput =  array(	'requestType'=>'getAliases',
+									'firstIndex'=>$index,
 									'account'=>$accountId);
 			return $this->getResponse();
 		}
